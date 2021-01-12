@@ -4,6 +4,8 @@ var app = new App({
   target: document.body,
 });
 
+import "./firebase";
+
 export default app;
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.

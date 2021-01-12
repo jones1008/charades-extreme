@@ -1,5 +1,7 @@
 <script>
   import {onMount} from 'svelte';
+  import Game from "./classes/Game";
+
   let count = 0;
   onMount(() => {
     const interval = setInterval(() => count++, 1000);
@@ -7,6 +9,11 @@
       clearInterval(interval);
     };
   });
+
+  function createGame() {
+    let game = new Game();
+    game.initialize();
+  }
 </script>
 
 <style>
@@ -57,6 +64,7 @@
 
 <div class="App">
   <header class="App-header">
+    test1
     <img src="/logo.svg" class="App-logo" alt="logo" />
     <p>Edit <code>src/App.svelte</code> and save to reload.</p>
     <p>Page has been open for <code>{count}</code> seconds.</p>
@@ -65,5 +73,6 @@
         Learn Svelte
       </a>
     </p>
+    <button on:click={createGame}></button>
   </header>
 </div>
