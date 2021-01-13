@@ -10,7 +10,8 @@
     "firebase-firestorm": "^2.0.5",
     "fireorm": "^0.17.2",
     "reflect-metadata": "^0.1.13",
-    "svelte": "^3.24.0"
+    "svelte": "^3.24.0",
+    "typesaurus": "^7.1.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.12.1",

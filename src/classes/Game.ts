@@ -1,95 +1,55 @@
-// import Team from "./Team";
-// import Score from "./Score";
-// import {Collection, getRepository, ISubCollection, SubCollection} from "fireorm";
-//
-// @Collection()
-// export default class Game {
-//     id: string;
-//
-//     countdownTime: number = 60;
-//
-//     remainingTime: number = 60;
-//
-//     score: Score[] = [];
-//
-//     @SubCollection(Team)
-//     teams: ISubCollection<Team>;
-//
-//     words: string[] = [];
-//
-//     wordsDone: string[] = [];
-//
-//     initialize(playerName: string = 'defaultPlayer'): Promise<{ t: Team, s: Score }[]> {
-//         // create 2 default teams and its scores
-//         const teamRepo = getRepository(Team);
-//         const scoreRepo = getRepository(Score);
-//
-//         let team1: Team = new Team("Blau", [playerName]);
-//         let team2: Team = new Team("Rot");
-//
-//         let promise1: Promise<{ t: Team, s: Score }> = teamRepo.create(team1).then((t: Team) => {
-//             return scoreRepo.create(new Score(t)).then((s: Score) => {
-//                 return {t, s};
-//             });
-//         });
-//         let promise2: Promise<{ t: Team, s: Score }> = teamRepo.create(team2).then((t: Team) => {
-//             return scoreRepo.create(new Score(t)).then((s: Score) => {
-//                 return {t, s};
-//             });
-//         });
-//
-//         return Promise.all([promise1, promise2]);
-//     }
-// };
+import {add, collection, Doc, get, Ref, subcollection, update} from "typesaurus";
 
+export class Game {
+    countdownTime: number = 60
+    remainingTime: number = -1
+    score: Score[] = []
+    teams: Ref<Team>[]
+    words: string[] = []
+    wordsDone: string[] = []
+}
 
-import Team from "./Team";
-import Score from "./Score";
-import {Entity, rootCollection, field, subCollection, ICollection, Collection} from 'firebase-firestorm';
+export function getGame(gameRef: Ref<Game>): Promise<Doc<Game>> {
+    return get(gameRef)
+}
 
-@rootCollection({
-    name: 'games'
-})
-export default class Game extends Entity {
-// export default class Game  {
-    id: string;
-
-    @field({name: 'countdown_time'})
-    countdownTime: number = 60;
-
-    @field({name: 'remaining_time'})
-    remainingTime: number = 60;
-
-    @field({name: 'score'})
-    score: Score[] = [];
-
-    @subCollection({
-        name: 'teams',
-        entity: Team
-    })
-    teams: ICollection<Team>;
-    // teams: Team[];
-
-    @field({name: 'words'})
-    words: string[] = [];
-
-    @field({name: 'words_done'})
-    wordsDone: string[] = [];
-
-    initialize(playerName: string = 'defaultPlayer'): Promise<{t: Team, s: Score}[]> {
-        // create 2 default teams and its scores
-        let team1: Team = new Team("Blau", [playerName]);
-        let team2: Team = new Team("Rot");
-        let promise1: Promise<{t: Team, s: Score}> = this.teams.create(team1).then((t: Team) => {
-            return Collection(Score).create(new Score(t)).then((s: Score) => {
-                return {t, s};
-            });
-        });
-        let promise2: Promise<{t: Team, s: Score}> = this.teams.create(team2).then((t: Team) => {
-            return Collection(Score).create(new Score(t)).then((s: Score) => {
-                return {t, s};
-            });
-        });
-        return Promise.all([promise1, promise2]);
+class Score {
+    team: Ref<Team>;
+    value: number = 0;
+    constructor(team: Ref<Team>) {
+        this.team = team
     }
+}
+
+class Team {
+    name: string = ""
+    members: string[] = [];
+    teamRef: Ref<Team>
+    constructor(name) {
+        this.name = name
+        this.members.push("Spieler 1")
+        this.members.push("Spieler 2")
+    }
+}
+
+export function createGame(): Promise<Ref<Game>> {
+    const games = collection<Game>('games')
+    const teams = subcollection<Team, Game>("teams", games)
+    let game = new Game()
+
+    return add(games, game).then(gameRef => {
+        let team1 = new Team("team1")
+        return add(teams(gameRef), team1).then(team1Ref => {
+            let team2 = new Team("team2")
+            return add(teams(gameRef), team2).then(team2Ref => {
+                let score1 = new Score(team1Ref)
+                let score2 = new Score(team2Ref)
+                game.score.push(score1)
+                game.score.push(score2)
+                return update(gameRef, game).then(() => {
+                    return new Promise<Ref<Game>>(() => game)
+                });
+            })
+        });
+    })
 }

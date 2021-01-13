@@ -1,32 +1,13 @@
-// import {Collection} from "fireorm";
-//
-// @Collection()
-// export default class Team {
-//     id: string;
-//
-//     name: string;
-//
-//     members: string[] = [];
-//
-//     constructor(name: string = 'player1', members?: string[]) {
-//         this.name = name;
-//         this.members = members;
-//     }
-// };
+import {collection, Collection} from "typesaurus";
 
+export class Team {
+    collection: Collection<Team>
 
-import {Entity, field} from "firebase-firestorm";
-
-export default class Team extends Entity {
-    @field({name: 'name'})
     name: string
+    members: string[];
 
-    @field({name: 'members'})
-    members: string[] = [];
-
-    constructor(name: string = 'player1', members?: string[]) {
-        super();
-        this.name = name;
-        this.members = members;
+    constructor(name: string) {
+        this.collection = collection("teams")
+        this.name = name
     }
 }

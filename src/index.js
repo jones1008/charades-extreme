@@ -1,10 +1,18 @@
+// firebase stuff
+import {localConfig} from "./local.config";
+
+import firebase from 'firebase/app';
+import "firebase/firestore";
+
+firebase.initializeApp(localConfig.firebaseConfig)
+
+
+// svelte stuff
 import App from "./App.svelte";
 
 var app = new App({
   target: document.body,
 });
-
-import "./firebase";
 
 export default app;
 
