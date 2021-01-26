@@ -1,29 +1,11 @@
-/** @type {import("snowpack").SnowpackUserConfig } */
+// Consult https://www.snowpack.dev to learn about these options
 module.exports = {
-  mount: {
-    public: '/',
-    src: '/_dist_',
-  },
-  plugins: [
-    '@snowpack/plugin-svelte',
-    '@snowpack/plugin-dotenv',
-  ],
-  install: [
-    /* ... */
-  ],
-  installOptions: {
-    /* ... */
-  },
-  devOptions: {
-    /* ... */
-  },
-  buildOptions: {
-    /* ... */
-  },
-  proxy: {
-    /* ... */
-  },
-  alias: {
-    /* ... */
-  },
+	extends: '@sveltejs/snowpack-config',
+	plugins: ['@snowpack/plugin-typescript'],
+	mount: {
+		'src/components': '/_components'
+	},
+	alias: {
+		$components: './src/components'
+	}
 };
