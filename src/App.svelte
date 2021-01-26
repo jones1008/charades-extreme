@@ -1,43 +1,29 @@
 <script lang="ts">
-  import {createGame, Game, getGame} from "./classes/Game"
-  import type {Ref} from "typesaurus"
-  import {update} from "typesaurus"
+    import Game from "./entities/Game";
+    import {getRepository} from "fireorm";
 
-  let game: Game
-  let gameRef: Ref<Game>
-
-  function newGame() {
-    createGame().then(ref => {
-      gameRef = ref
-      return getGame(ref)
-    }).then(gameDoc => {
-      game = gameDoc.data
-    }).catch(err => {
-      console.log(err)
-    });
-  }
-
-  let newWord: string = ""
-  function addWord() {
-    game.words.push(newWord)
-    newWord = ""
-    update(gameRef, game).catch(err => {
-      console.log(err)
-    });
-  }
+    function createGame(){
+        const gameRepository = getRepository(Game)
+        let game = new Game()
+        game.countdownTime = 60
+        game.remainingTime =
+        game.isStarted = false
+    }
 </script>
 
 <style>
 </style>
 
 <div class="App">
-  <button on:click={newGame}>Spiel erstellen</button>
-  <input name="new-word" type="text" placeholder="Wort eintippen..." bind:value={newWord}>
-  <button on:click={addWord}>Wort hinzufügen</button>
-  {#if game }
-    <h4>Deine Worte</h4>
-    {#each game.words as word}
-      <p>{word}</p>
-    {/each}
-  {/if}
+    <h1>Spielerklärung</h1>
+    <p>
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+        takimata sanctus est Lorem ipsum dolor sit amet.
+    </p>
+    <button on:click={createGame}>lokales Spiel</button>
+    <button on:click={createGame}>remote Spiel</button>
 </div>

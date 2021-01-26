@@ -1,12 +1,7 @@
 {
-    "include": ["src"],
-    "exclude": ["node_modules/*"],
     "compilerOptions": {
-        "target": "es2019",
-        "types": ["svelte"],
-        "moduleResolution": "node",
+        "target": "ES5",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "esModuleInterop": true
     }
 }

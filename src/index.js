@@ -1,10 +1,19 @@
 // firebase stuff
 import {localConfig} from "./local.config";
 
-import firebase from 'firebase/app';
-import "firebase/firestore";
+import * as admin from 'firebase-admin';
+import * as fireorm from 'fireorm';
 
-firebase.initializeApp(localConfig.firebaseConfig)
+admin.initializeApp({
+  credential: admin.credential.cert(localConfig.firebaseConfig),
+  databaseURL: localConfig.firebaseConfig.databaseURL
+});
+
+const firestore = admin.firestore();
+fireorm.initialize(firestore)
+
+// import firebase from 'firebase/app';
+// import "firebase/firestore";
 
 
 // svelte stuff
